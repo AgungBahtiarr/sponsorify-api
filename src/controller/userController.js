@@ -1,5 +1,7 @@
 const { PrismaClient } = require("@prisma/client");
 const { toString } = require("express-validator/src/utils");
+const { validationResult } = require("express-validator");
+const bcrypt = require("bcrypt");
 const prisma = new PrismaClient();
 
 const getAllUser = async (req, res) => {
@@ -11,30 +13,27 @@ const getAllUser = async (req, res) => {
 };
 
 const addUser = async (req, res) => {
-  const { username, email, password, roleId } = req.body;
+  const error = validationResult(req);
 
-  if ((username, email, password, roleId)) {
-    try {
-      const user = await prisma.users.create({
-        data: {
-          username: toString(username),
-          email: toString(email),
-          password: toString(password),
-          roleId: parseInt(roleId),
-        },
-      });
-      res.status(201).json(user);
-    } catch (e) {
-      res.status(400).json({
-        success: false,
-        error: e,
-      });
-    }
-  } else {
+  if (!error.isEmpty()) {
     res.status(400).json({
       success: false,
-      error: "All fields are required to be filled in",
+      error,
     });
+  } else {
+    const { username, email, password, roleId } = req.body;
+
+    const hashPassword = bcrypt.hashSync(password, 10);
+
+    const user = await prisma.users.create({
+      data: {
+        username: toString(username),
+        email: toString(email),
+        password: hashPassword,
+        roleId: parseInt(roleId),
+      },
+    });
+    res.status(201).json(user);
   }
 };
 
@@ -52,10 +51,18 @@ const getDetailUser = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  const { username, email, roleId } = req.body;
-  const idUser = req.params.id;
+  const error = validationResult(req);
 
-  if ((username, email, roleId)) {
+  if (!error.isEmpty()) {
+    res.status(400).json({
+      success: false,
+      error,
+    });
+  } else {
+    const { username, email, password, roleId } = req.body;
+    const idUser = req.params.id;
+    const hashPassword = bcrypt.hashSync(password, 10);
+
     try {
       const user = await prisma.users.update({
         where: {
@@ -64,21 +71,21 @@ const updateUser = async (req, res) => {
         data: {
           username: username,
           email: email,
+          password: hashPassword,
           roleId: parseInt(roleId),
         },
       });
-      res.status(200).json(user);
-    } catch (e) {
+
+      res.status(200).json({
+        success: true,
+        data: user,
+      });
+    } catch (error) {
       res.status(400).json({
         success: false,
-        error: e,
+        error: error,
       });
     }
-  } else {
-    res.status(400).json({
-      success: false,
-      error: "All fields are required to be filled in",
-    });
   }
 };
 
