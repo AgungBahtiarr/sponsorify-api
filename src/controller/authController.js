@@ -1,58 +1,60 @@
 const { PrismaClient } = require("@prisma/client");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-
+const { validationResult } = require("express-validator");
 const prisma = new PrismaClient();
 
 const register = async (req, res) => {
-  const { username, email, roleId, password } = req.body;
+  const error = validationResult(req);
 
-  const hashPassword = bcrypt.hashSync(password, 10);
-
-  if ((username, email, password, roleId)) {
-    try {
-      const user = await prisma.users.create({
-        data: {
-          username,
-          email,
-          password: hashPassword,
-          roleId: parseInt(roleId),
-        },
-      });
-      res.status(201).json({
-        success: true,
-        data: user,
-      });
-    } catch (error) {
-      res.status(400).json({
-        success: false,
-        error: error,
-      });
-    }
-  } else {
+  if (!error.isEmpty()) {
     res.status(400).json({
       success: false,
-      error: "All fields are required to be filled in",
+      error,
+    });
+  } else {
+    const { username, email, roleId, password } = req.body;
+
+    const hashPassword = bcrypt.hashSync(password, 10);
+
+    const user = await prisma.users.create({
+      data: {
+        username,
+        email,
+        password: hashPassword,
+        roleId: parseInt(roleId),
+      },
+    });
+    res.status(201).json({
+      success: true,
+      data: user,
     });
   }
 };
+
 const login = async (req, res) => {
+  const error = validationResult(req);
+
+  if (!error.isEmpty()) {
+    res.status(400).json({
+      success: false,
+      error,
+    });
+  }
   const { email, password } = req.body;
 
-  if ((email, password)) {
-    const user = await prisma.users.findUnique({
-      where: {
-        email: email,
-      },
+  const user = await prisma.users.findUnique({
+    where: {
+      email: email,
+    },
+  });
+
+  if (!user) {
+    res.status(400).json({
+      success: false,
+      message: "user not found",
     });
-
-    if (!user) {
-      res.status(400).json({
-        success: false,
-        message: "user not found",
-      });
-    }
-
+  } else {
     const isValid = bcrypt.compareSync(password, user.password);
     if (!isValid) {
       res.status(400).json({
@@ -75,11 +77,6 @@ const login = async (req, res) => {
         token: token,
       });
     }
-  } else {
-    res.status(400).json({
-      success: false,
-      error: "All fields are required to be filled in",
-    });
   }
 };
 
