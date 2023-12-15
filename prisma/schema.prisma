@@ -33,12 +33,9 @@ model Sponsorships {
   id                   Int             @id @default(autoincrement())
   companyName          String
   companyDesc          String
-  province             Provinces       @relation(fields: [provinceId], references: [id])
-  provinceId           Int             @unique
-  city                 Cities          @relation(fields: [cityId], references: [id])
-  cityId               Int             @unique
-  district             Districs        @relation(fields: [districtId], references: [id])
-  districtId           Int             @unique
+  province             String
+  city                 String
+  district             String
   completeAddress      String
   category             Categories      @relation(fields: [categoryId], references: [id])
   categoryId           Int             @unique
@@ -64,37 +61,13 @@ model withDrawTimes {
   sponsorship Sponsorships?
 }
 
-model Provinces {
-  id          Int           @id @default(autoincrement())
-  name        String
-  sponsorship Sponsorships?
-  Events      Events?
-}
-
-model Cities {
-  id           Int           @id @default(autoincrement())
-  name         String
-  Sponsorships Sponsorships?
-  Events       Events?
-}
-
-model Districs {
-  id           Int           @id @default(autoincrement())
-  name         String
-  Sponsorships Sponsorships?
-  Events       Events?
-}
-
 model Events {
   id              Int             @id @default(autoincrement())
   eventName       String
   eventDate       DateTime
-  province        Provinces       @relation(fields: [provinceId], references: [id])
-  provinceId      Int             @unique
-  city            Cities          @relation(fields: [cityId], references: [id])
-  cityId          Int             @unique
-  district        Districs        @relation(fields: [districtId], references: [id])
-  districtId      Int             @unique
+  province        String
+  city            String
+  district        String
   completeAddress String
   mapsLink        String
   eventDesc       String
