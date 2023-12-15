@@ -9,8 +9,9 @@ const register = async (req, res) => {
 
   if (!error.isEmpty()) {
     res.status(400).json({
-      success: false,
+      status: false,
       error,
+      data: null,
     });
   } else {
     const { username, email, roleId, password } = req.body;
@@ -26,7 +27,8 @@ const register = async (req, res) => {
       },
     });
     res.status(201).json({
-      success: true,
+      status: true,
+      error: null,
       data: user,
     });
   }
@@ -37,7 +39,7 @@ const login = async (req, res) => {
 
   if (!error.isEmpty()) {
     res.status(400).json({
-      success: false,
+      status: false,
       error,
     });
   }
@@ -51,15 +53,17 @@ const login = async (req, res) => {
 
   if (!user) {
     res.status(400).json({
-      success: false,
-      message: "user not found",
+      status: false,
+      error: "user not found",
+      data: null,
     });
   } else {
     const isValid = bcrypt.compareSync(password, user.password);
     if (!isValid) {
       res.status(400).json({
-        success: false,
-        message: "Password Invalid",
+        status: false,
+        error: "Password Invalid",
+        data: null,
       });
     } else {
       const payload = {
@@ -72,7 +76,8 @@ const login = async (req, res) => {
       const exp = 60 * 60 * 12;
       const token = jwt.sign(payload, secret, { expiresIn: exp });
       res.status(200).json({
-        success: true,
+        status: true,
+        error: null,
         data: user,
         token: token,
       });
@@ -85,13 +90,15 @@ const logout = async (req, res) => {
 
   if (!req.userData) {
     res.status(200).json({
-      success: true,
-      message: "You are logged out",
+      status: true,
+      error: null,
+      data: "You are logged out",
     });
   } else {
     res.statu(400).json({
-      success: false,
-      message: "Logout failed",
+      status: false,
+      error: null,
+      data: "Logout failed",
     });
   }
 };

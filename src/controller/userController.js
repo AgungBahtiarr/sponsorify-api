@@ -7,7 +7,8 @@ const prisma = new PrismaClient();
 const getAllUser = async (req, res) => {
   const user = await prisma.users.findMany();
   res.status(200).json({
-    success: false,
+    status: false,
+    error: null,
     data: user,
   });
 };
@@ -17,8 +18,9 @@ const addUser = async (req, res) => {
 
   if (!error.isEmpty()) {
     res.status(400).json({
-      success: false,
+      status: false,
       error,
+      data: null,
     });
   } else {
     const { username, email, password, roleId } = req.body;
@@ -44,9 +46,17 @@ const getDetailUser = async (req, res) => {
   });
 
   if (user) {
-    res.send(user);
+    res.status(200).json({
+      status: true,
+      erorr: null,
+      data: user,
+    });
   } else {
-    res.send("data tidak ditemukan");
+    res.status(400).json({
+      status: false,
+      erorr: "Data tidak ditemukan",
+      data: null,
+    });
   }
 };
 
@@ -55,8 +65,9 @@ const updateUser = async (req, res) => {
 
   if (!error.isEmpty()) {
     res.status(400).json({
-      success: false,
+      status: false,
       error,
+      data: null,
     });
   } else {
     const { username, email, password, roleId } = req.body;
@@ -77,13 +88,15 @@ const updateUser = async (req, res) => {
       });
 
       res.status(200).json({
-        success: true,
+        status: true,
+        error: null,
         data: user,
       });
     } catch (error) {
       res.status(400).json({
-        success: false,
+        status: false,
         error: error,
+        data: null,
       });
     }
   }
@@ -100,12 +113,13 @@ const deleteUser = async (req, res) => {
     });
 
     res.status(200).json({
-      success: true,
+      status: true,
+      erorr: null,
       data: user,
     });
   } catch (e) {
     res.status(400).json({
-      success: false,
+      status: false,
       error: e,
     });
   }
