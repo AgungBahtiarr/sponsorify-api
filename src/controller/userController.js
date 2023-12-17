@@ -121,6 +121,7 @@ const deleteUser = async (req, res) => {
     res.status(400).json({
       status: false,
       error: e,
+      data: null,
     });
   }
 };

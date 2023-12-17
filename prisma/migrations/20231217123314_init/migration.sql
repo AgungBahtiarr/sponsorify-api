@@ -23,9 +23,9 @@ CREATE TABLE `Sponsorships` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `companyName` VARCHAR(191) NOT NULL,
     `companyDesc` VARCHAR(191) NOT NULL,
-    `provinceId` INTEGER NOT NULL,
-    `cityId` INTEGER NOT NULL,
-    `districtId` INTEGER NOT NULL,
+    `province` VARCHAR(191) NOT NULL,
+    `city` VARCHAR(191) NOT NULL,
+    `district` VARCHAR(191) NOT NULL,
     `completeAddress` VARCHAR(191) NOT NULL,
     `categoryId` INTEGER NOT NULL,
     `withDrawalTimeId` INTEGER NOT NULL,
@@ -33,9 +33,6 @@ CREATE TABLE `Sponsorships` (
     `applicationExpired` INTEGER NOT NULL,
     `reportDeadline` INTEGER NOT NULL,
 
-    UNIQUE INDEX `Sponsorships_provinceId_key`(`provinceId`),
-    UNIQUE INDEX `Sponsorships_cityId_key`(`cityId`),
-    UNIQUE INDEX `Sponsorships_districtId_key`(`districtId`),
     UNIQUE INDEX `Sponsorships_categoryId_key`(`categoryId`),
     UNIQUE INDEX `Sponsorships_withDrawalTimeId_key`(`withDrawalTimeId`),
     PRIMARY KEY (`id`)
@@ -58,46 +55,18 @@ CREATE TABLE `withDrawTimes` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `Provinces` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `name` VARCHAR(191) NOT NULL,
-
-    PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
-CREATE TABLE `Cities` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `name` VARCHAR(191) NOT NULL,
-
-    PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
-CREATE TABLE `Districs` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `name` VARCHAR(191) NOT NULL,
-
-    PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
 CREATE TABLE `Events` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `eventName` VARCHAR(191) NOT NULL,
     `eventDate` DATETIME(3) NOT NULL,
-    `provinceId` INTEGER NOT NULL,
-    `cityId` INTEGER NOT NULL,
-    `districtId` INTEGER NOT NULL,
+    `province` VARCHAR(191) NOT NULL,
+    `city` VARCHAR(191) NOT NULL,
+    `district` VARCHAR(191) NOT NULL,
     `completeAddress` VARCHAR(191) NOT NULL,
     `mapsLink` VARCHAR(191) NOT NULL,
     `eventDesc` VARCHAR(191) NOT NULL,
     `userId` INTEGER NOT NULL,
 
-    UNIQUE INDEX `Events_provinceId_key`(`provinceId`),
-    UNIQUE INDEX `Events_cityId_key`(`cityId`),
-    UNIQUE INDEX `Events_districtId_key`(`districtId`),
-    UNIQUE INDEX `Events_userId_key`(`userId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -152,28 +121,10 @@ CREATE TABLE `EventsReports` (
 ALTER TABLE `Users` ADD CONSTRAINT `Users_roleId_fkey` FOREIGN KEY (`roleId`) REFERENCES `Roles`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Sponsorships` ADD CONSTRAINT `Sponsorships_provinceId_fkey` FOREIGN KEY (`provinceId`) REFERENCES `Provinces`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `Sponsorships` ADD CONSTRAINT `Sponsorships_cityId_fkey` FOREIGN KEY (`cityId`) REFERENCES `Cities`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `Sponsorships` ADD CONSTRAINT `Sponsorships_districtId_fkey` FOREIGN KEY (`districtId`) REFERENCES `Districs`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE `Sponsorships` ADD CONSTRAINT `Sponsorships_categoryId_fkey` FOREIGN KEY (`categoryId`) REFERENCES `Categories`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Sponsorships` ADD CONSTRAINT `Sponsorships_withDrawalTimeId_fkey` FOREIGN KEY (`withDrawalTimeId`) REFERENCES `withDrawTimes`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `Events` ADD CONSTRAINT `Events_provinceId_fkey` FOREIGN KEY (`provinceId`) REFERENCES `Provinces`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `Events` ADD CONSTRAINT `Events_cityId_fkey` FOREIGN KEY (`cityId`) REFERENCES `Cities`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `Events` ADD CONSTRAINT `Events_districtId_fkey` FOREIGN KEY (`districtId`) REFERENCES `Districs`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Events` ADD CONSTRAINT `Events_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `Users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

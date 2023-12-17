@@ -13,7 +13,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Routes
 app.use("/users", authMiddleware, userRouters);
 app.use("/auth", authRouters);
-app.use("/events", eventRouters);
+app.use("/events", authMiddleware, eventRouters);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
