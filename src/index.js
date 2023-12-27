@@ -6,6 +6,7 @@ const authMiddleware = require("./middleware/authMiddleware");
 const userRouters = require("./routes/users");
 const authRouters = require("./routes/auth");
 const eventRouters = require("./routes/event");
+const roleRouters = require("./routes/role");
 
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -14,6 +15,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/users", authMiddleware, userRouters);
 app.use("/auth", authRouters);
 app.use("/events", authMiddleware, eventRouters);
+app.use("/roles", authMiddleware, roleRouters);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
