@@ -39,9 +39,9 @@ const getDetailEvent = async (req, res) => {
 const addEvent = async (req, res) => {
   const error = validationResult(req);
   const eventDate = new Date(req.body.eventDate);
-  const authUserId = req.userData.roleId;
+  const authUserRole = req.userData.roleId;
 
-  if (authUserId != 1) {
+  if (authUserRole != 1) {
     return res.status(401).json({
       status: false,
       error: "Unauthorized role",
@@ -98,19 +98,30 @@ const addEvent = async (req, res) => {
 const updateEvent = async (req, res) => {
   const error = validationResult(req);
   const idEvent = req.params.id;
+  const authUserRole = req.userData.roleId;
+  const eventDate = new Date(req.body.eventDate);
+
   const {
     eventName,
-    eventDate,
     eventDesc,
     completeAddress,
     mapsLink,
+    userId,
     city,
     district,
     province,
   } = req.body;
 
+  if (authUserRole != 1) {
+    return res.status(401).json({
+      status: false,
+      error: "Unauthorized role",
+      data: null,
+    });
+  }
+
   if (!error.isEmpty()) {
-    res.status(400).json({
+    return res.status(400).json({
       status: false,
       error: error,
       data: null,
@@ -126,13 +137,13 @@ const updateEvent = async (req, res) => {
         eventDate,
         completeAddress,
         mapsLink,
-        userId,
+        userId: parseInt(userId),
         city,
         district,
         province,
       },
     });
-    res.status(201).json({
+    return res.status(201).json({
       status: true,
       error: null,
       data: event,
@@ -150,13 +161,13 @@ const deleteEvent = async (req, res) => {
       },
     });
 
-    res.status(200).json({
+    return res.status(200).json({
       status: true,
       error: null,
       data: event,
     });
   } catch (e) {
-    res.status(400).json({
+    return res.status(400).json({
       status: false,
       error: e,
       data: null,
