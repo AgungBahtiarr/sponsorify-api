@@ -12,10 +12,10 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Routes
-app.use("/users", authMiddleware, userRouters);
-app.use("/auth", authRouters);
-app.use("/events", authMiddleware, eventRouters);
-app.use("/roles", authMiddleware, roleRouters);
+app.use("/api/users", authMiddleware, userRouters);
+app.use("/api/auth", authRouters);
+app.use("/api/events", authMiddleware, eventRouters);
+app.use("/api/roles", authMiddleware, roleRouters);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
