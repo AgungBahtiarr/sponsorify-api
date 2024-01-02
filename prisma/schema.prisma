@@ -22,6 +22,7 @@ model Users {
   role           Roles            @relation(fields: [roleId], references: [id])
   roleId         Int
   Events         Events[]
+  Sponsorship    Sponsorships[]
   Proposals      Proposals[]
   Saveds         Saveds[]
   serviceReviews ServiceReviews[]
@@ -37,32 +38,35 @@ model Sponsorships {
   id                   Int             @id @default(autoincrement())
   companyName          String
   companyDesc          String
+  profilePhoto         String
   province             String
   city                 String
   district             String
   completeAddress      String
   category             Categories      @relation(fields: [categoryId], references: [id])
-  categoryId           Int             @unique
+  categoryId           Int
   withDrawTime         withDrawTimes   @relation(fields: [withDrawalTimeId], references: [id])
-  withDrawalTimeId     Int             @unique
+  withDrawalTimeId     Int
   limitEventSubmission Int
   applicationExpired   Int
   reportDeadline       Int
   Proposals            Proposals[]
   Saveds               Saveds[]
   EventsReports        EventsReports[]
+  usersId              Int
+  Users                Users?          @relation(fields: [usersId], references: [id])
 }
 
 model Categories {
-  id           Int           @id @default(autoincrement())
+  id           Int            @id @default(autoincrement())
   categoryName String
-  sponsorship  Sponsorships?
+  sponsorship  Sponsorships[]
 }
 
 model withDrawTimes {
-  id          Int           @id @default(autoincrement())
-  time        Int
-  sponsorship Sponsorships?
+  id          Int            @id @default(autoincrement())
+  time        String
+  sponsorship Sponsorships[]
 }
 
 model Events {
