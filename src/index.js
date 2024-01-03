@@ -8,6 +8,7 @@ const authRouters = require("./routes/auth");
 const eventRouters = require("./routes/event");
 const roleRouters = require("./routes/role");
 const sponsorshipRouters = require("./routes/sponsorship");
+const categoryRouters = require("./routes/category");
 
 const multer = require("multer");
 const fileStorage = multer.diskStorage({
@@ -56,9 +57,14 @@ app.use("/api/events", authMiddleware, eventRouters);
 app.use("/api/roles", authMiddleware, roleRouters);
 app.use(
   "/api/sponsorship",
-  [multer({ storage: fileStorage, fileFilter: fileFilter }).single("file")],
+  [
+    authMiddleware,
+    multer({ storage: fileStorage, fileFilter: fileFilter }).single("file"),
+  ],
   sponsorshipRouters
 );
+
+app.use("/api/category", categoryRouters);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
